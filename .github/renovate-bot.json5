@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "username": "rosey-bot[bot]",
-  "gitAuthor": "rosey-bot <98030736+rosey-bot[bot]@users.noreply.github.com>",
-  "repositories": ["onedr0p/containers-mirror"]
+  "username": "Doug Piranha [bot]",
+  "gitAuthor": "Doug Piranha Bot <22471051+doug-piranha-bot[bot]@users.noreply.github.com>",
+  "repositories": ["haraldkoch/containers-mirror"]
 }
