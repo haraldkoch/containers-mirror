@@ -12,6 +12,7 @@
     "helpers:pinGitHubActionDigests"
   ],
   "platform": "github",
+  "includeForks": true,
   "onboarding": false,
   "requireConfig": "optional",
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
