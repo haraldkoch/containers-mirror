@@ -1,0 +1,27 @@
+---
+name: "Close Stale Issues"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 1 * * *'
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@46e4a501e119d39574a54e53a06c9a705efc55c9 # v1.6.1
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
+      - name: Close Stale Issues
+        uses: actions/stale@v8
+        with:
+          repo-token: "${{ steps.app-token.outputs.token }}"
+          stale-issue-message: 'This issue is stale because it has been open 5 days with no activity. Remove stale label or comment or this will be closed in 5 days.'
+          close-issue-message: 'This issue was closed because it has been stalled for 5 days with no activity.'
+          days-before-stale: 5
+          days-before-close: 5
+          days-before-pr-stale: -1
+          days-before-pr-close: -1
