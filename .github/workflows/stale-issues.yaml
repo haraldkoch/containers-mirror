@@ -16,7 +16,7 @@ jobs:
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
       - name: Close Stale Issues
-        uses: actions/stale@v8
+        uses: actions/stale@1160a2240286f5da8ec72b1c0816ce2481aabf84 # v8
         with:
           repo-token: "${{ steps.app-token.outputs.token }}"
           stale-issue-message: 'This issue is stale because it has been open 5 days with no activity. Remove stale label or comment or this will be closed in 5 days.'
