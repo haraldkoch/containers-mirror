@@ -1,1 +1,1 @@
-FROM docker.io/enix/x509-certificate-exporter:3.10.1
+FROM docker.io/enix/x509-certificate-exporter:3.11.0
