@@ -11,10 +11,10 @@ env:
 
 jobs:
   changed-files:
-    name: Generate Build Matrix
+    name: Get Changed Files
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
     steps:
       - name: Generate Token
         uses: tibdex/github-app-token@v2
@@ -32,18 +32,16 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v41
         with:
-          dir_names: true
+          files: apps/**
           dir_names_max_depth: 2
+          dir_names: true
+          escape_json: false
           json: true
-          files: |
-            apps/**
+          quotepath: false
+          safe_output: false
 
       - name: List all changed files
-        run: |
-          echo '${{ steps.changed-files.outputs.all_changed_files }}'
-
-      - id: set-matrix
-        run: echo "matrix={\"container\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "${GITHUB_OUTPUT}"
+        run: echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
 
   push:
     name: Push
@@ -51,17 +49,29 @@ jobs:
     permissions:
       packages: write
       id-token: write
-    needs: [changed-files]
+    needs: ["changed-files"]
     strategy:
-      matrix: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+      matrix:
+        containers: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+      max-parallel: 4
+      fail-fast: false
     steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: "${{ secrets.BOT_APP_ID }}"
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: "${{ steps.app-token.outputs.token }}"
 
       - name: Prepare
         id: prep
         run: |
-          container_name=$(basename ${{ matrix.container }})
+          container_name=$(basename ${{ matrix.containers }})
           echo "container-name=${container_name}" >> "${GITHUB_OUTPUT}"
 
           container_image=$(head -1 ./apps/${container_name}/Dockerfile | sed 's/^FROM //')
