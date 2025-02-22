@@ -1,0 +1,1 @@
+FROM docker.io/bloomberg/goldpinger:3.10.2@sha256:3c75265e397a23c8bd3ef01eaf73c4f430ec798e1c0735698408efb47f98fedf
