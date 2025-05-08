@@ -1,12 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>haraldkoch/renovate-config"],
-  "includeForks": true,
+  "extends": [
+    "github>haraldkoch/renovate-config"
+  ],
+  "forkProcessing": "enabled",
   "customManagers": [
     {
       "customType": "regex",
       "description": "Process annotated dependencies",
-      "fileMatch": ["(^|/)metadata\\.ya?ml$"],
+      "managerFilePatterns": [
+        "/(^|/)metadata\\.ya?ml$/"
+      ],
       "matchStrings": [
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?( extractVersion=(?<extractVersion>\\S+))?\\n.+ (?<currentValue>[v|\\d]\\S+)"
       ],
@@ -17,8 +21,12 @@
   ],
   "packageRules": [
     {
-      "description": ["Auto-merge container app updates"],
-      "matchFileNames": ["**/metadata.yaml"],
+      "description": [
+        "Auto-merge container app updates"
+      ],
+      "matchFileNames": [
+        "**/metadata.yaml"
+      ],
       "automerge": true,
       "automergeType": "pr",
       "ignoreTests": false
