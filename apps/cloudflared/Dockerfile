@@ -1,1 +1,1 @@
-FROM docker.io/cloudflare/cloudflared:2025.2.1@sha256:03737f27c38ecfb257a55664953cac510727cf27052c51ddb7c8ff1a2b9969e1
+FROM docker.io/cloudflare/cloudflared:2025.4.2@sha256:698f5c59bf0b9ece62f8c60061004bdfcf7718fbac5d72b87e214af7b9d1d7ac
