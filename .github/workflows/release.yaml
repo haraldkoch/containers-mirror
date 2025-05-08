@@ -48,7 +48,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{ needs.changed-clusters.outputs.any_changed == 'true' }}
+    if: ${{ needs.changed-files.outputs.any_changed == 'true' }}
     permissions:
       packages: write
       id-token: write
