@@ -132,7 +132,7 @@ jobs:
           context: .
           platforms: ${{ steps.prep.outputs.container-platform }}
           file: ./apps/${{ steps.prep.outputs.container-name }}/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name == 'workflow_dispatch' && inputs.release || github.event_name == 'push' }}
           tags: |
             ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner }}/${{ steps.prep.outputs.container-name }}:${{ steps.prep.outputs.container-version }}
 
