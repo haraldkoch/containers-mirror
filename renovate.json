@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>haraldkoch/renovate-config"],
+  "includeForks": true,
   "customManagers": [
     {
       "customType": "regex",
