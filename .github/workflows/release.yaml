@@ -2,6 +2,16 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      app:
+        type: string
+        description: The name of the app to build
+        required: true
+      release:
+        type: boolean
+        description: Whether to release the app
+        required: false
+        default: false
   pull_request:
     branches: ["main"]
   push:
@@ -11,12 +21,13 @@ env:
   IMAGE_REGISTRY: ghcr.io
 
 jobs:
-  changed-files:
+  changed:
     name: Get Changed Files
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
-      matrix: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
-      any_changed: ${{ steps.changed-clusters.outputs.any_changed }}
+      apps: ${{ steps.select-apps.outputs.apps }}
     steps:
       - name: Generate Token
         uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2
@@ -30,32 +41,46 @@ jobs:
         with:
           token: "${{ steps.generate-token.outputs.token }}"
 
-      - name: Get changed files
-        id: changed-files
-        uses: JJGadgets/tj-actions-changed-files@9200e69727eb73eb060652b19946b8a2fdfb654b
+      - name: Get Changed Files
+        id: changed-dirs
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46.0.5
         with:
-          files: apps/**
-          dir_names_max_depth: 2
           dir_names: true
-          escape_json: false
-          json: true
-          quotepath: false
-          safe_output: false
+          dir_names_max_depth: "1"
+          path: apps
 
-      - name: List all changed files
-        run: echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}"
+      - name: Select Apps to Build
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        id: apps
+        with:
+          script: |
+            const input =
+              context.eventName === 'workflow_dispatch'
+                ? '${{ inputs.app }}'
+                : '${{ steps.changed-files.all_changed_and_modified_files }}';
+
+            const appsToBuild = input.split(' ').filter(Boolean);
+            const output = [];
+
+            appsToBuild.forEach((app) => {
+              output.push(app);
+            });
+
+            core.setOutput('apps', output);
+            console.log('apps:', JSON.stringify(output, null, 2));
+            core.summary.addHeading('Apps to build:').addList(appsToBuild).write();
 
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{ needs.changed-files.outputs.any_changed == 'true' }}
+    if: ${{ needs.changed.outputs.apps != '[]' }}
+    needs: ["changed"]
     permissions:
       packages: write
       id-token: write
-    needs: ["changed-files"]
     strategy:
       matrix:
-        containers: ${{ fromJSON(needs.changed-files.outputs.matrix) }}
+        containers: ${{ fromJSON(needs.changed.outputs.apps) }}
       max-parallel: 4
       fail-fast: false
     steps:
