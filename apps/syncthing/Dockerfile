@@ -1,1 +1,1 @@
-FROM docker.io/syncthing/syncthing:1.29.6
+FROM docker.io/syncthing/syncthing:1.29.7
