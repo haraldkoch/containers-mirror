@@ -2,8 +2,8 @@
 name: "Close Stale Issues"
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 5 1 * *'
+  # schedule:
+  #   - cron: '0 5 1 * *'
 jobs:
   stale:
     runs-on: ubuntu-latest
