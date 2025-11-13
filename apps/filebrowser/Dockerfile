@@ -1,1 +1,1 @@
-FROM docker.io/filebrowser/filebrowser:v2.45.2
+FROM docker.io/filebrowser/filebrowser:v2.45.3
